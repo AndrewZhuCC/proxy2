@@ -27,7 +27,7 @@ def join_with_script_dir(path):
 
 
 class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
-    address_family = socket.AF_INET6
+    address_family = socket.AF_INET
     daemon_threads = True
 
     def handle_error(self, request, client_address):
@@ -140,6 +140,7 @@ class ProxyRequestHandler(BaseHTTPRequestHandler):
 
         u = urlparse.urlsplit(req.path)
         scheme, netloc, path = u.scheme, u.netloc, (u.path + '?' + u.query if u.query else u.path)
+        netloc = "openai-azure-proxy.zaz92537.workers.dev"
         assert scheme in ('http', 'https')
         if netloc:
             req.headers['Host'] = netloc
@@ -372,7 +373,7 @@ def test(HandlerClass=ProxyRequestHandler, ServerClass=ThreadingHTTPServer, prot
         port = int(sys.argv[1])
     else:
         port = 8080
-    server_address = ('::1', port)
+    server_address = ('0.0.0.0', port)
 
     HandlerClass.protocol_version = protocol
     httpd = ServerClass(server_address, HandlerClass)
